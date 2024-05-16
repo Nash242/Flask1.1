@@ -19,7 +19,7 @@ from langchain.document_loaders import CSVLoader
 
 app = Flask(__name__)
 
-os.environ["OPENAI_API_KEY"] = 
+os.environ["OPENAI_API_KEY"] = ""
 llm_model = "gpt-3.5-turbo"
 llm = ChatOpenAI(temperature=0.1, model=llm_model)
 embeddings = OpenAIEmbeddings()
@@ -159,11 +159,11 @@ def create_vectors(persist_directory, directory, docs):
             vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
             return vectordb
     else:
-        os.makedirs(persist_directory)
+        # os.makedirs(persist_directory)
         
-        # Create Chroma vector database
-        vectors = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
-        vectors.persist()
+        # # Create Chroma vector database
+        # vectors = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
+        # vectors.persist()
         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
         
         # Create and initialize processed.txt
@@ -263,21 +263,6 @@ def runmain(user_que):
                 3. The answer should be in detail, if answer is of 20 steps then provide all the 20 steps.\
                 4. Provide answer in Steps only.
                 5. If no relevant answer found then say 'Please rephrase the question?'\
-                
-                #### Example
-                Question : What are the different types of data collected by Azure Monitor?
-                Answer : Azure Monitor collects data from variety of source which can be categorized in these tiers as follows:
-                1.  Application monitoring data : It is monitoring data about your application. It could be your web application 
-                    or some other client server application. Application need not be deployed within the Azure. There are 
-                    agents available which can be installed to pull the performance log and application log data from the 
-                    application deployed on on-premises server or on other cloud servers like AWS or GCP.
-                    Guest OS monitoring data: Data belongs to operating system on which your application is running. 
-                2.  Azure monitor agents can pull the performance data from the underlying OS irrespective of whether is it azure 
-                    managed or on-premises server.
-                3.  Azure resource monitoring data: As the name suggest it is data about the azure resources.
-                    Example could be virtual machine, or any other IaaS or PaaS service.
-                4.  Azure subscription monitoring data: Data related to the your azure subscription operation and management.
-                5.  Azure tenant monitoring data: It is data related to Tenant level. For example Azure Active directory.
 
                 \nQuestion: {user_question}
                 \nContext:{top1}
