@@ -31,6 +31,12 @@ const generateResponse = (usermsg) => {
             contentType: false  
         }).done(function(data) {
             console.log(data);
+            const buttons = document.querySelectorAll('.chatbox .bot-btns');
+            buttons.forEach(button => {
+                if (!button.disabled) {
+                    button.disabled = true;
+                }
+            });
             $('.incoming:last').remove();
             var res='';
             if (!data.message.startsWith("answer:")) {
@@ -53,10 +59,9 @@ const generateResponse = (usermsg) => {
                                         </div>
                                     </li>`)
             res=convertUrlsToLinks(res)
-            res=res.replace(/\n/g, "<br>").replace(//g, '')
+            res=res.replace(/\n/g, "<br>")
             res=res.replace('<br><br>','<br>')
-            
-            typeWriter(res,typingSpeed = 40)
+            typeWriter(res,typingSpeed = 10)
             
         }).fail(function() {
             // messageElement.classList.add("error");
@@ -109,21 +114,21 @@ const refreshchat = () => {
                     <div class="bot-response">
                     <div>Here are some questions i can help you with.</div>
                     <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption?</button>
-                    <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">How many sessions, a user can open for the same request?</button>
-                    <button class="bot-btns" onclick="botbtns(this)">Which are the different options/buttons given on Password Safe Portal request submission page?</button>
+                    <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">Need access for MSS report?</button>
+                    <button class="bot-btns" onclick="botbtns(this)">Need Share Point Support?</button>
                     
                     </div>
                 </li>
-                <li class="chat incoming" style="padding-top: 10px;">
+                <li class="chat incoming" style="padding-top: 10px;height: 15px;">
                     <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
-                    <div style="color: grey;font-size: 11px;">Mon, May 13, 2024, 11:42:27 AM</div>
+                    <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
                 </li>  `
   $(".chatbox").html(htmlstring)
 }
 
 sendChatBtn.addEventListener("click", handleChat);
 closeBtn.addEventListener("click", () => document.body.classList.remove("show-chatbot"));
-chatbotToggler.addEventListener("click", () => document.body.classList.toggle("show-chatbot"));
+chatbotToggler.addEventListener("click", () => {   document.body.classList.toggle("show-chatbot")});
 refreshbtn.addEventListener("click", refreshchat);
 
 
@@ -136,5 +141,12 @@ function botbtns(ele){
     const buttons = document.querySelectorAll('.chatbox .bot-btns');
     buttons.forEach(button => { button.disabled = true });
     var helpBtns = document.getElementById('helpbtns');
-    helpBtns.style.display = 'none';
+        helpBtns.style.display = 'none';
+}
+
+function modaloff(){
+    var modal = document.getElementById('helpbtns');
+            modal.style.display = 'none';
+
+    
 }
