@@ -89,7 +89,7 @@
       </div>
       <div>Q&A BOT</div>
     </header>
-    <ul class="chatbox">
+    <ul class="chatbox" onclick="modaloff()">
       <li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
         <div class="bot-response ">
           <div>Hello Buddy,Welcome to Access Robo.What brings you here today? 
@@ -104,36 +104,31 @@
         <div class="bot-response">
           <div>Here are some questions i can help you with.</div>
           <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption?</button>
-          <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">How many sessions, a user can open for the same request?</button>
-          <button class="bot-btns" onclick="botbtns(this)">Which are the different options/buttons given on Password Safe Portal request submission page?</button>
+          <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">Need access for MSS report?</button>
+          <button class="bot-btns" onclick="botbtns(this)">Need Share Point Support?</button>
           
         </div>
       </li>
-      <!-- <li class="chat incoming" style="padding-top: 10px;">
+      <!-- <li class="chat incoming" style="padding-top: 10px;height: 25px;"">
         <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
-        <div style="color: grey;font-size: 11px;" >Mon, May 13, 2024, 11:42:27 AM</div>
+        <div style="color: grey;font-size: 11px;">Mon, May 13, 2024, 11:42:27 AM</div>
       </li>   -->
     </ul>
     <div class="chat-input">
-      <svg id="helpicon" onclick="showhide()"  style="position:absolute;top:4px;right: 7px;cursor:pointer;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff555f" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
+      <svg id="helpicon" onclick="showhide()"  style="position:absolute;top: 3px;right: 7px;cursor:pointer;" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ff555f" class="bi bi-exclamation-circle" viewBox="0 0 16 16">
         <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
         <path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0M7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0z"/>
       </svg>
       <div id="helpbtns" class="" >
           <div>Here are some questions i can help you with.</div>
-          <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption??</button>
-          <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">How many sessions, a user can open for the same request?</button>
-          <button class="bot-btns" onclick="botbtns(this)">Which are the different options/buttons given on Password Safe Portal request submission page?</button>
+          <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption?</button>
+          <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">Need access for MSS report?</button>
+          <button class="bot-btns" onclick="botbtns(this)">Need Share Point Support?</button>
       </div>
       <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
       <span id="send-btn" style="margin-bottom:auto;margin-top: auto;" class="material-symbols-rounded">send</span>
     </div>
   </div>
-
-
-  
-
-
 </body>
 
 </html>
