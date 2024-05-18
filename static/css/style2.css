@@ -1,0 +1,25 @@
+.logo{
+    width: 160px;
+    height: 72px;
+}
+
+.edit-text{
+    color: lightslategrey;
+    margin-right: 10px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.bg-body1{
+    background-color: #e9ecef45;
+}
+
+#showtable{
+    background-color: white;
+}
+
+#alert-text{
+    font-size: 17px;
+    font-weight: 500;
+    color: black;
+}

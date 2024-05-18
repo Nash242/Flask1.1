@@ -6,13 +6,16 @@
     animation: bblFadInOut 1.8s infinite ease-in-out;
   }
   .bot-loader {
-    color: #ff555f;
+    color: #ff555f !important;
     font-size: 5px;
     position: relative;
     text-indent: -9999em;
     transform: translateZ(0);
     animation-delay: -0.16s;
     margin-left: 20px;
+    padding: 0px !important;
+    /* border-radius: 0px !important; */
+    background-color: transparent !important;
   }
   .bot-loader:before,
   .bot-loader:after {
