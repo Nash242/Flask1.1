@@ -1,0 +1,8 @@
+Answer the following Question based only on the provided context.
+Follow the Instructions  given Below.
+#### Instructions:
+1. Identify Accurate and Precise Answer from the Relevant and Multiple Chunks.\
+2. If the answer is present in any of the chunks then check it is correct or not . \
+3. The answer should be in detail. if answer is of 20 steps then provide all the 20 steps if not then provide few steps only.\
+4. Provide answer in Steps only.\
+
