@@ -74,9 +74,73 @@ def vector_intent(chunk_metadata):
     vectordb = Chroma(persist_directory=directory1_path, embedding_function=embeddings)
     return vectordb
 
+#======================================= PDF ==========================================================
+def load_pdf(folder_path):
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        if os.path.isfile(file_path) and file_path.endswith(".pdf"):
+            loader = PyPDFLoader(file_path)
+            pages = loader.load_and_split()
+            return pages
+
+def list1(pages):
+    l1 = []
+    for i in pages:
+        data = i.page_content
+        l1.append(data)
+    #print(l1)
+    return l1
+
+def fetch_questions(l1):
+    questions = []
+    pattern = r'Q\d+\..*?\?'
+
+    # Extract questions
+    for text in l1:
+        matches = re.findall(pattern, text, re.DOTALL)
+        questions.extend(matches)
+
+    return questions
+
+def get_pdf_chunks(documents):
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=2000,
+        chunk_overlap=20,
+        length_function=len,
+        separators=['\nQ','\n\n','\n']
+    )
+    chunks = text_splitter.create_documents(documents)
+    #print(chunks)
+    return chunks
+
+def fetch_answers(l1):
+    pattern = r'Answer:.*?(?=Q\d+\.|$)'
+    answers = []
+
+    # Extract answers
+    for text in l1:
+        matches = re.findall(pattern, text, re.DOTALL)
+        answers.extend(matches)
+
+    return answers
+
+def m_chunks(chunks, answers):
+    for chunk, answer in zip(chunks, answers):
+        chunk_metadata = {"answer": answer}
+        chunk.metadata = chunk_metadata
+    return chunks
+
+def persist(chunks, user_question):
+    embeddings = OpenAIEmbeddings()
+    persist_directory = "temp"
+    retriever2 = Chroma.from_documents(documents=chunks, embedding=embeddings, persist_directory=persist_directory)
+    retriever2.persist()
+    quest = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
+    return quest
 
 def rerank_top_n(query,output,n_chunks):
-    model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', max_length=512)
+    # model = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2', max_length=512)
+    model = CrossEncoder("C:\\Users\\nimis\\Downloads\\Cross_encoder")
     input_lst=[]
     for chunk in output:
         tup=(query,chunk.page_content)
@@ -99,6 +163,7 @@ def load_docs(folder_path):
     documents = []
     for filename in os.listdir(folder_path):
         file_path = os.path.join(folder_path, filename)
+        print(os.listdir(folder_path))
         if os.path.isfile(file_path) and file_path.endswith(".txt"):
             with open(file_path, "r", encoding="utf-8") as file:
                 content = file.read()
@@ -108,8 +173,8 @@ def load_docs(folder_path):
 
 def split_docs(documents):
     text_splitter = RecursiveCharacterTextSplitter(
-        chunk_size=3000,
-        chunk_overlap=200,
+        chunk_size=2000,
+        chunk_overlap=100,
         length_function=len
     )
     chunks = text_splitter.create_documents(documents)
@@ -159,11 +224,6 @@ def create_vectors(persist_directory, directory, docs):
             vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
             return vectordb
     else:
-        # os.makedirs(persist_directory)
-        
-        # # Create Chroma vector database
-        # vectors = Chroma.from_documents(documents=docs, embedding=embeddings, persist_directory=persist_directory)
-        # vectors.persist()
         vectordb = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
         
         # Create and initialize processed.txt
@@ -172,14 +232,21 @@ def create_vectors(persist_directory, directory, docs):
         
         return vectordb
 
+def prompt_txt():
+    prompt_file_path = "prompt.txt"
+    with open(prompt_file_path, 'r') as file:
+        prompt = file.read()
+    return prompt
 #=================================== One time Run ========================================================== 
 directory = "contents"
 persist_directory = "chroma_db"    
 documents = load_docs(directory)
 docs = split_docs(documents)
 vectordb = create_vectors(persist_directory, directory, docs)
+print("Vector db created")
 intent_chunks = intent_main(directory)
 intent_db = vector_intent(intent_chunks)
+#print("IntentDB hit")
 
 
 #============================================= Flask Functions ===========================================
@@ -187,6 +254,87 @@ intent_db = vector_intent(intent_chunks)
 @app.route('/', methods=['GET','POST'])
 def get_route():
     return render_template('index.html')
+
+@app.route('/getprompt', methods=['POST','GET'])
+def getprompt():
+    if request.method == 'GET':
+        return render_template('prompt.html')
+    
+@app.route('/sendprompt', methods=['POST','GET'])
+def sendprompt():
+    try :
+        if request.method == 'GET':
+            text_file_path = os.path.join(app.root_path, 'prompt.txt')
+            with open(text_file_path, 'r') as file:
+                content = file.read()
+            return jsonify(mdata=content,msg='success')
+    except Exception as e:
+        print(e)
+        return jsonify(data=e,msg='fail')
+    
+@app.route('/updateprompt', methods=['POST','GET'])
+def updateprompt():
+    try :
+        if request.method == 'POST':
+            data=request.form['prompt']
+            print(data)
+            with open('prompt.txt', 'w') as file:
+                file.write(data)
+            return jsonify({"mdata":data,"msg":"success"})
+    except Exception as e:
+        print(e)
+        return jsonify({"mdata":e,"msg":"fail"})
+
+    
+@app.route('/getpositivefeedback', methods=['POST','GET'])
+def getpositivefeedback():
+    if request.method == 'GET':
+        return render_template('positivefeedback.html')
+
+@app.route('/positivefeedback', methods=['POST','GET'])
+def positivefeedback():
+    try :
+        if request.method == 'GET':
+            tdata =pd.read_csv('thumbs_up_log.csv').to_json(orient='records')
+            return jsonify({'tdata':tdata,'msg':'success'})
+    except Exception as e :
+        print(e)
+        return jsonify({'tdata':e,'msg':'fail'})
+
+@app.route('/getnegativefeedback', methods=['POST','GET'])
+def getnegativefeedback():
+    if request.method == 'GET':
+        return render_template('negativefeedback.html') 
+
+@app.route('/negativefeedback', methods=['POST','GET'])
+def negativefeedback():
+    try:
+        if request.method == 'GET':
+            tdata =pd.read_csv('thumbs_down_log.csv').to_json(orient='records')
+            return jsonify({'tdata':tdata,'msg':'success'}) 
+    except Exception as e :
+        print(e)
+        return jsonify({'tdata':e,'msg':'fail'})
+
+@app.route('/getintent', methods=['POST','GET'])
+def getintent():
+    if request.method == 'GET':
+        return render_template('intent.html')
+
+@app.route('/intent', methods=['POST','GET'])
+def intent():
+    try:
+        if request.method == 'POST':
+            contents_folder = os.path.join(app.root_path, 'contents')
+            files = request.files.getlist('files')
+            for file in files :
+                file_path = os.path.join(contents_folder, file.filename)
+                print(file_path)
+                file.save(file_path)
+            return jsonify({'msg':'success'})
+    except Exception as e :
+        print(e)
+        return jsonify({'mdata':e,'msg':'fail'})
 
 
 @app.route('/getanswer', methods=['POST','GET'])
@@ -205,12 +353,13 @@ def post_route():
 
 @app.route('/dislikeresponse', methods=['POST'])
 def write_to_first_csv():
+    print('dislike running')
     usermassage = request.form['usermassage']
     botresponse = request.form['botresponse']
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     csv_file_path = "thumbs_down_log.csv"
     file_exists = os.path.isfile(csv_file_path)
-    with open(csv_file_path, mode='a', newline='') as f:
+    with open(csv_file_path, mode='a', newline='', encoding='utf-8') as f:
         fieldnames = ['Timestamp', 'Question', 'Answer']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         if not file_exists:
@@ -222,12 +371,16 @@ def write_to_first_csv():
 
 @app.route('/likeresponse', methods=['POST'])
 def write_to_second_csv():
+    print('like running')
     usermassage = request.form['usermassage']
+    #print(usermassage,20*"=")
     botresponse = request.form['botresponse']
+    #print(30*"*",botresponse)
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    #print("#"*30,timestamp)
     csv_file_path = "thumbs_up_log.csv"
     file_exists = os.path.isfile(csv_file_path)
-    with open(csv_file_path, mode='a', newline='') as f:
+    with open(csv_file_path, mode='a', newline='', encoding='utf-8') as f:
         fieldnames = ['Timestamp', 'Question', 'Answer']
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         if not file_exists:
@@ -245,38 +398,37 @@ def runmain(user_que):
         if (user_question.lower().strip() in ['hi','hello','good morning','good afternoon','good evening','Hi']):
             answer = "Hello! How can I Help you?"
             return answer
+        
         elif (os.path.isdir(directory1_path)):
             db3 = Chroma(persist_directory=directory1_path, embedding_function=embeddings)
             quest = db3.similarity_search(user_question,k=3)
-            top = rerank_top_n(user_question,quest,1)
+            #print(quest)
+            top = rerank_top_n(user_question,quest,3)
+            #print("======================",top)
             if top[0][1]*10 > 60:
                 return top[0][0].metadata["answer"]
             else:
                 matching_docs = vectordb.similarity_search(user_question, k=3)
+                print("======================================================")
                 print(matching_docs)
+                print("======================================================")
                 top1 = rerank_top_n(user_question,matching_docs,3)
-                prompt = f"""Answer the following Question based only on the provided context.
-                Follow the Instructions and demo example given Below .
-                #### Instructions:
-                1. Identify Answer from Relevant and Multiple Chunks.\
-                2. After Identifying the answer. \
-                3. The answer should be in detail, if answer is of 20 steps then provide all the 20 steps.\
-                4. Provide answer in Steps only.
-                5. If no relevant answer found then say 'Please rephrase the question?'\
-
+                #print(top1)
+                prompt = f"""{prompt_txt()} 
                 \nQuestion: {user_question}
                 \nContext:{top1}
                 \nAnswer: """
+            
+                print(prompt)
                 answer = llm.invoke(prompt)
+                
                 return answer.content
-        else:       
-            return "Please try to rephrase your question"
-
+        else:
+            return "Answer not found. Please Rephrase the question?"
 
 
 
 if __name__ == '__main__':
-    
     try:
         app.run(debug=True)
     except Exception as e:
