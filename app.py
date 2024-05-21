@@ -336,6 +336,20 @@ def intent():
         print(e)
         return jsonify({'mdata':e,'msg':'fail'})
 
+@app.route('/submitticket', methods=['POST','GET'])
+def submitticket():
+    try :
+        if request.method == 'POST':
+            print(request)
+            ohr=request.form['ohr']
+            email=request.form['email']
+            dataaccess=request.form['dataaccess']
+            securitytype=request.form['securitytype']
+            print(ohr,email,dataaccess,securitytype)
+            return jsonify({"msg":"success","data":[ohr,email,dataaccess,securitytype]})
+    except Exception as e :
+        print(e)
+        return jsonify({"msg":"fail","data":e})
 
 @app.route('/getanswer', methods=['POST','GET'])
 def post_route():
