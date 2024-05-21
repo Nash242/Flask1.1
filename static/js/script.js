@@ -22,7 +22,7 @@ const generateResponse = (usermsg) => {
         $(".chatbox").append(loader)
         const API_URL = "/getanswer";
         const formData = new FormData();
-        formData.append("question", usermsg);
+        formData.append("question", userMessage);
         $.ajax({
             url: API_URL,
             type: "POST",
@@ -113,9 +113,9 @@ const refreshchat = () => {
                     <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
                     <div class="bot-response">
                     <div>Here are some questions i can help you with.</div>
-                    <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption?</button>
-                    <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">Need access for MSS report?</button>
-                    <button class="bot-btns" onclick="botbtns(this)">Need Share Point Support?</button>
+                    <button class="bot-btns" onclick="botbtns(this)">Here are some questions i can help you with, Here  i can help you with?</button>
+                    <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;"> i can help you with?</button>
+                    <button class="bot-btns" onclick="botbtns(this)">Here are some questions i can help you with?</button>
                     
                     </div>
                 </li>
@@ -149,4 +149,123 @@ function modaloff(){
             modal.style.display = 'none';
 
     
+}
+
+function raiseticket(ele){
+    const buttonText = ele.innerText.trim();
+    $('.like-btn-parent').remove();   
+     
+    const buttons = document.querySelectorAll('.chatbox .bot-btns');
+    buttons.forEach(button => { button.disabled = true });
+    var helpBtns = document.getElementById('helpbtns');
+    helpBtns.style.display = 'none';
+    let html_msg=`<li class="chat outgoing"><div class="u-question">${buttonText}</div>
+                         <div style="color: grey;font-size:11px;padding-top: 10px;">${getCurrentDateTime()}</div>
+                      </li>`;
+    $(".chatbox").append(html_msg)
+    let htmlstring=`<li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
+                        <div class="bot-response ">
+                            <div style="margin-bottom:10px;font-weight: 500;">Raise Ticket Form</div>
+                            <div id="formdiv">
+                                <form  id="" action="" method="POST" class="ticketform">
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" id="gen_ohr">OHR</label>
+                                    <input name="ohr" type="text" class="form-control " id="emp_ohr" placeholder="Please enter ohr " autocomplete="off">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" id="gen_email">EMAIL</label>
+                                    <input name="email" type="email" class="form-control" id="emp_email" placeholder="please enter email " autocomplete="off">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" >Data ACCESS</label>
+                                    <select class="form-select" id="data-access" name="dataaccess">
+                                        <option value="">Choose</option>
+                                        <option value="Financial">Financial</option>
+                                        <option value="Financial Data Repository">Financial Data Repository</option>
+                                        <option value="Non-Financial">Non-Financial</option>
+                                        <option value="Sales">Sales</option>
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" >SECURITY TYPE</label>
+                                    <select class="form-select" id="security-type" name="securitytype">
+                                        <option value="">Choose</option>
+                                        <option value="Account/Customer">Account/Customer</option>
+                                        <option value="Cost Center">Cost Center</option>
+                                        <option value="Group COE">Group COE</option>
+                                        <option value="Natural Account">Natural Account</option>
+                                        <option value="Capability">Capability</option>
+                                        <option value="SDO">SDO</option>
+                                        <option value="Service Line">Service Line</option>
+                                        <option value="Verticle">Verticle</option>
+                                    </select>
+                                </div>
+                                <div style="display: flex;justify-content: space-between;align-items: center;">
+                                    <div>
+                                    <input class="btn btn-secondary"  type="reset" value="Reset" >
+                                    <input  class="btn btn-primary" type="button" value="Submit" id="submit-ticket" onclick="submitfun()">
+                                    </div>
+                                    <div style="color:red;font-weight: 500;display:none" id="formerror">Internal server Error !!!</div> 
+                                </div>
+                                </form>
+                            </div>
+                    </li> 
+                    <li class="chat incoming" style="margin-top: 10px;height: 15px;">
+                        <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                        <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
+                    </li>  `
+    $(".chatbox").append(htmlstring)
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+}
+
+
+
+
+
+
+function submitfun(){
+    let ohr =$('#emp_ohr').val()
+    let email =$('#emp_email').val()
+    let dataaccess=$('#data-access').val()
+    let securitytype =$('#security-type').val()
+    if(ohr != '' && email != '' && dataaccess != '' && securitytype != ''){
+        const formdata = new FormData();
+        formdata.append("ohr", $('#emp_ohr').val());
+        formdata.append("email", $('#emp_email').val());
+        formdata.append("dataaccess", $('#data-access').val());
+        formdata.append("securitytype", $('#security-type').val());
+        $.ajax({
+            type: 'POST',
+            url: '/submitticket',
+            data: formdata,
+            processData: false, 
+            contentType: false, 
+            success: function(res) {
+            console.log(res);
+            if(res.msg="success"){
+                $("#formerror").hide()
+                $(".chatbox").append(`<li class="chat incoming" style="padding-top: 10px;">
+                                        <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                                        <div class="bot-response" style="background-color: powderblue;">
+                                        <div>Your ticket has been successfully submitted !!!<br><br>
+                                        <strong>ID : RMTI80978355</strong>
+                                        </div>
+                                        </div>
+                                    </li>
+                                    <li class="chat incoming" style="padding-top: 10px;height: 15px;">
+                                        <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                                        <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
+                                    </li>`)
+                $('.ticketform').last().css({'pointer-events':'none'});
+
+            }else{
+                $("#formerror").show()
+            }
+                
+            },
+            error: function(error) {
+                
+            }
+        });
+    }
 }
