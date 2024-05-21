@@ -156,9 +156,9 @@ header h2 {
   color: #000;
   background: #f2f2f2;
   padding: 10px;
+  word-wrap: break-word;
+  text-wrap: wrap;
   word-break: break-word;
-  /* word-wrap: break-word;
-  text-wrap: wrap; */
 }
 .chatbot .chat-input {
   display: flex;
@@ -232,6 +232,10 @@ header h2 {
   }
 
   .chat-input textarea{
+    font-size: 0.7rem;
+  }
+  #formdiv ,#formdiv label
+  ,#formdiv input,#formdiv select{
     font-size: 0.7rem;
   }
   
