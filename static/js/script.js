@@ -22,7 +22,7 @@ const generateResponse = (usermsg) => {
         $(".chatbox").append(loader)
         const API_URL = "/getanswer";
         const formData = new FormData();
-        formData.append("question", userMessage);
+        formData.append("question", usermsg);
         $.ajax({
             url: API_URL,
             type: "POST",
@@ -106,7 +106,7 @@ const refreshchat = () => {
                             Please use the options below or ask me anything about product.</div>
                             <br>
                             <br>
-                            <h6>(Do not share any personally identificable information(pii) or sensitive personal information(spi) data as chat history is logged.)</h6>
+                            <p style="font-weight: 600;">(Do not share any personally identificable information(pii) or sensitive personal information(spi) data as chat history is logged.)</p>
                         </div>
                 </li> 
                 <li class="chat incoming" style="padding-top: 10px;">
@@ -268,4 +268,180 @@ function submitfun(){
             }
         });
     }
+}
+
+let calndercount=0;
+function getcalender(ele){
+    $('.like-btn-parent').remove();
+    const buttonText = ele.innerText.trim();
+    const buttons = document.querySelectorAll('.chatbox .bot-btns');
+    buttons.forEach(button => { button.disabled = true });
+    var helpBtns = document.getElementById('helpbtns');
+    helpBtns.style.display = 'none';
+    let html_msg=`<li class="chat outgoing"><div class="u-question">${buttonText}</div>
+                         <div style="color: grey;font-size:11px;padding-top: 10px;">${getCurrentDateTime()}</div>
+                      </li>`;
+    $(".chatbox").append(html_msg)
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    let loader =`<li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
+                         <div class="bot-loader" style="border-radius:10px 10px 10px 10px;"></div>
+                    </li>`
+    $(".chatbox").append(loader)
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    $.ajax({
+        url: '/getdashboard',
+        type: "GET",
+        processData: false,  
+        contentType: false,
+        success:function (data){
+         console.log(data);
+         if(data.msg=='success'){
+            $('.incoming:last').remove();
+            let htmlstring=`<li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
+                        <div class="bot-response ">
+                            <div style="margin:5px 0px;">Current dashboard status...</div>
+                            <div class="cal-container" id='count${calndercount}'>
+                                <div class="cal-calendar">
+                                <header>
+                                    <pre class="cal-left">◀</pre>
+                                    <div class="header-display">
+                                    <p class="cal-display">""</p>
+                                    </div>
+                                    <pre class="cal-right">▶</pre>
+                                </header>
+                                <div class="cal-week">
+                                    <div>Su</div>
+                                    <div>Mo</div>
+                                    <div>Tu</div>
+                                    <div>We</div>
+                                    <div>Th</div>
+                                    <div>Fr</div>
+                                    <div>Sa</div>
+                                </div>
+                                <div class="cal-days"></div>
+                                </div>
+                                <div class="cal-tooltip"></div>
+                            </div>
+                        </div>
+                </li> 
+                <li class="chat incoming" style="padding-top: 10px;height: 15px;">
+                    <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                    <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
+                </li>  `
+             $(".chatbox").append(htmlstring)
+             let id="#count"+calndercount
+             let parent = document.querySelector(id);
+             let display = parent.querySelector(".cal-display");
+             let days = parent.querySelector(".cal-days");
+             let previous = parent.querySelector(".cal-left");
+             let next = parent.querySelector(".cal-right ");
+             let tooltip = parent.querySelector(".cal-tooltip");
+         
+                 let date = new Date();
+                 let year = date.getFullYear();
+                 let month = date.getMonth();
+         
+             function displayCalendar() {
+                 const firstDay = new Date(year, month, 1);
+                 const lastDay = new Date(year, month + 1, 0);
+                 const firstDayIndex = firstDay.getDay();
+                 const numberOfDays = lastDay.getDate();
+                 let formattedDate = date.toLocaleString("en-US", { month: "long",year: "numeric" });
+                 display.innerHTML = `${formattedDate}`;
+                 days.innerHTML = ""; 
+         
+                 for (let x = 1; x <= firstDayIndex; x++) {
+                     const div = document.createElement("div");
+                     div.innerHTML = "";
+                     days.appendChild(div);
+                 }
+         
+                 for (let i = 1; i <= numberOfDays; i++) {
+                     let div = document.createElement("div");
+                     let currentDate = new Date(year, month, i);
+                     let year2 = currentDate.getFullYear();
+                     let month2 = String(currentDate.getMonth() + 1).padStart(2, '0');
+                     let day2 = String(currentDate.getDate()).padStart(2, '0');
+                     let customdate =`${year2}-${month2}-${day2}`;
+                     div.dataset.date = customdate;
+                     if(data.tdata.hasOwnProperty(customdate)){
+                         div.classList.add("sdate");
+                     }
+                     let decision=isDateLessThanToday(customdate)   //getCurrentQuarterInfo(customdate)
+                     if( decision ){
+                         div.style.opacity = "0.5";
+                     }
+                     div.innerHTML = i;
+                     days.appendChild(div);
+         
+                     if (
+                         currentDate.getFullYear() === new Date().getFullYear() &&
+                         currentDate.getMonth() === new Date().getMonth() &&
+                         currentDate.getDate() === new Date().getDate()
+                     ) {
+                         div.classList.add("current-date");
+                     }
+                     div.addEventListener("mouseover", (e) => {
+                         let eventDate = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(currentDate.getDate()).padStart(2, '0')}`;
+                         let eventList =data.tdata[eventDate] //events[eventDate];
+                         if (eventList) {
+                             // tooltip.innerHTML =eventList.join("<br>");
+                             tooltip.innerHTML = eventList.map((event, index) => `${(index + 1).toString().padStart(2, '0')}) ${event}`).join("<br>");
+                             tooltip.style.display = "block";
+                             //tooltip.style.left = `${e.pageX + 10}px`;
+                             //tooltip.style.right ='0px' //`${e.pageX + 10}px`;
+                            //  tooltip.style.top = `${e.pageY}px`;
+                            //console.log('e.pageY',e.pageY- 400); 
+                           // console.log('e.pageX',e.pageX);
+                            tooltip.style.bottom=`${e.pageY -325 }px`; 
+                         } else {
+                             tooltip.style.display = "none";
+                         }
+                     });
+         
+                     div.addEventListener("mouseout", () => {
+                         tooltip.style.display = "none";
+                     });
+                 }
+             }
+         
+             displayCalendar();
+         
+             previous.addEventListener("click", () => {
+                 month--;
+                 if (month < 0) {
+                     month = 11;
+                     year--;
+                 }
+                 date.setMonth(month);
+                 displayCalendar();
+             });
+         
+             next.addEventListener("click", () => {
+                 month++;
+                 if (month > 11) {
+                     month = 0;
+                     year++;
+                 }
+                 date.setMonth(month);
+                 displayCalendar();
+             });
+         
+             calndercount++
+            // chatbox.scrollTo(0, chatbox.scrollHeight);
+         }
+        },error:function (error){
+            console.log(error);
+        }
+    })
+}
+
+
+function isDateLessThanToday(dateString) {
+    const providedDate = new Date(dateString);
+    const today = new Date();
+    if(today > providedDate){
+        return true
+    }
+
 }
