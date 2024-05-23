@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+    ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    
+    li {
+        margin: 10px 0;
+    }
+    
+    a {
+        text-decoration: none;
+        color: purple;
+        font-size: 18px;
+        transition: color 0.3s;
+    }
+    
+    a:hover {
+        color: blue;
+    }
+    </style>
+    <title>Config</title>
+</head>
+<body>
+    <h2>Chatbot's Url</h2>
+    <p>Click on the links below to open the corresponding page.</p>
+    <ul>
+        <li><a href="{{ url_for('getintent') }}" target="_blank">Intent</a></li>
+        <li><a href="{{ url_for('getpositivefeedback') }}" target="_blank">Like</a></li>
+        <li><a href="{{ url_for('getnegativefeedback') }}" target="_blank">Dislike</a></li>
+        <li><a href="{{ url_for('getprompt') }}" target="_blank">Prompt</a></li>
+    </ul>
+    
+</body>
+</html>
