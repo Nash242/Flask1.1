@@ -5,9 +5,11 @@
   <meta charset="utf-8">
   <title>Genpact</title>
   <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/poppins.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/mycss.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/loader.css')}}">
+  <link rel="stylesheet" href="{{url_for('static',filename='css/calender.css')}}">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <!-- Google Fonts Link For Icons -->
@@ -98,7 +100,7 @@
             Please use the options below or ask me anything about product.</div>
           <br>
           <br>
-          <h6>(Do not share any personally identificable information(pii) or sensitive personal information(spi) data as chat history is logged.)</h6>
+          <p style="font-weight: 600;">(Do not share any personally identificable information(pii) or sensitive personal information(spi) data as chat history is logged.)</p>
         </div>
       </li> 
       <li class="chat incoming" style="padding-top: 10px;">
@@ -126,7 +128,8 @@
           <button class="bot-btns" onclick="botbtns(this)">What is Azure Key Vault Encryption?</button>
           <button class="bot-btns" onclick="botbtns(this)" style="margin: 5px 0px;">Need access for MSS report?</button>
           <button class="bot-btns" onclick="botbtns(this)" style="margin: 0px 0px 5px 0px;">Need Share Point Support?</button>
-          <button class="bot-btns" onclick="raiseticket(this)" style="background-color: #00aecf;">Raise Ticket</button>
+          <button class="bot-btns" onclick="raiseticket(this)" style="background-color: #00aecf; margin: 0px 0px 5px 0px;">Raise Ticket</button>
+          <button class="bot-btns" onclick="getcalender(this)" style="background-color: #00aecf;">Show dashboard</button>
       </div>
       <textarea placeholder="Enter a message..." spellcheck="false" required></textarea>
       <span id="send-btn" style="margin-bottom:auto;margin-top: auto;" class="material-symbols-rounded">send</span>
