@@ -16,6 +16,7 @@ from langchain.document_loaders import PyPDFLoader
 import csv
 import time
 from langchain.document_loaders import CSVLoader
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -255,6 +256,10 @@ intent_db = vector_intent(intent_chunks)
 def get_route():
     return render_template('index.html')
 
+@app.route('/config')
+def geturl():
+    return render_template('url.html')
+
 @app.route('/getprompt', methods=['POST','GET'])
 def getprompt():
     if request.method == 'GET':
@@ -403,6 +408,20 @@ def write_to_second_csv():
         writer = csv.DictWriter(f, fieldnames=fieldnames)
         writer.writerow({'Timestamp': timestamp, 'Question': usermassage, 'Answer': botresponse})
     return jsonify({'msg':'success'})
+
+
+@app.route('/getdashboard', methods=['POST','GET'])
+def getdashboard():
+    try :
+        if request.method == 'GET':
+            tdata =pd.read_excel("Dashboard.xlsx") #.to_json(orient='records')
+            dash = tdata.to_dict('list')
+            result = {dash['Updation_date'][i].strftime('%Y-%m-%d'): dash['Dashboard'][i].split(", ") for i in range(len(dash['Dashboard']))}
+            print(result)
+            return jsonify({"msg":"success","tdata":result})
+    except Exception as e :
+        print(e)
+        return jsonify({"msg":"fail","data":e})
 
 #====================================== Main Function call ==================================================================
 def runmain(user_que):
