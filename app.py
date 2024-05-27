@@ -345,13 +345,11 @@ def intent():
 def submitticket():
     try :
         if request.method == 'POST':
-            print(request)
-            ohr=request.form['ohr']
-            email=request.form['email']
-            dataaccess=request.form['dataaccess']
-            securitytype=request.form['securitytype']
-            print(ohr,email,dataaccess,securitytype)
-            return jsonify({"msg":"success","data":[ohr,email,dataaccess,securitytype]})
+            form_data = {}
+            for key, value in request.form.items():
+                form_data[key] = value
+            print(form_data)
+            return jsonify({"msg":"success","tdata":form_data})
     except Exception as e :
         print(e)
         return jsonify({"msg":"fail","data":e})
