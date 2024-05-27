@@ -8,7 +8,9 @@ var clicked=false;
 let userMessage = null; // Variable to store user's message
 const inputInitHeight = chatInput.scrollHeight;
 
-
+localStorage.setItem('botuser', 'Pranay');
+let loggedusername=localStorage.getItem('botuser');
+$(".loggedusername").text(loggedusername)
 
 const generateResponse = (usermsg) => {
     if (usermsg.length > 0){
@@ -102,7 +104,7 @@ const refreshchat = () => {
     chatInput.style.height = `${inputInitHeight}px`;
     let htmlstring=`<li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
                         <div class="bot-response ">
-                            <div>Hello Buddy,Welcome to Access Robo.What brings you here today? 
+                        <div>Hello <span class="loggedusername">${loggedusername}</span> , Welcome to Access Robo.What brings you here today?
                             Please use the options below or ask me anything about product.</div>
                             <br>
                             <br>
@@ -163,50 +165,63 @@ function raiseticket(ele){
                          <div style="color: grey;font-size:11px;padding-top: 10px;">${getCurrentDateTime()}</div>
                       </li>`;
     $(".chatbox").append(html_msg)
+    chatbox.scrollTo(0, chatbox.scrollHeight);
+    let botuserValue = localStorage.getItem('botuser');
+    console.log('botuserValue',botuserValue);
     let htmlstring=`<li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
                         <div class="bot-response ">
-                            <div style="margin-bottom:10px;font-weight: 500;">Raise Ticket Form</div>
+                            <div style="font-weight: 500;margin-bottom:5px;">Raise Ticket Form</div>
                             <div id="formdiv">
                                 <form  id="" action="" method="POST" class="ticketform">
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" id="gen_ohr">OHR</label>
-                                    <input name="ohr" type="text" class="form-control " id="emp_ohr" placeholder="Please enter ohr " autocomplete="off">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" id="gen_email">EMAIL</label>
-                                    <input name="email" type="email" class="form-control" id="emp_email" placeholder="please enter email " autocomplete="off">
-                                </div>
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" >Data ACCESS</label>
-                                    <select class="form-select" id="data-access" name="dataaccess">
-                                        <option value="">Choose</option>
-                                        <option value="Financial">Financial</option>
-                                        <option value="Financial Data Repository">Financial Data Repository</option>
-                                        <option value="Non-Financial">Non-Financial</option>
-                                        <option value="Sales">Sales</option>
-                                    </select>
-                                </div>
-                                <div class="input-group mb-3">
-                                    <label class="input-group-text" >SECURITY TYPE</label>
-                                    <select class="form-select" id="security-type" name="securitytype">
-                                        <option value="">Choose</option>
-                                        <option value="Account/Customer">Account/Customer</option>
-                                        <option value="Cost Center">Cost Center</option>
-                                        <option value="Group COE">Group COE</option>
-                                        <option value="Natural Account">Natural Account</option>
-                                        <option value="Capability">Capability</option>
-                                        <option value="SDO">SDO</option>
-                                        <option value="Service Line">Service Line</option>
-                                        <option value="Verticle">Verticle</option>
-                                    </select>
-                                </div>
-                                <div style="display: flex;justify-content: space-between;align-items: center;">
-                                    <div>
-                                    <input class="btn btn-secondary"  type="reset" value="Reset" >
-                                    <input  class="btn btn-primary" type="button" value="Submit" id="submit-ticket" onclick="submitfun()">
+                                    <div class=" mb-1">
+                                        <label class="form-label mb-0" >Category</label>
+                                        <select class="form-select cust-category" id="" name="Category" onchange="changeform(this)" required>
+                                            <option value="Data Related Request">Data Related Request</option>
+                                            <option value="Access Related request">Access Related request</option>
+                                        </select>
                                     </div>
-                                    <div style="color:red;font-weight: 500;display:none" id="formerror">Internal server Error !!!</div> 
-                                </div>
+                                    <p style="margin: 0px;font-size: small;"><span style="color:red;background: transparent;margin: 0px;">* </span>Indicates required</p>
+                                    <div class="mb-3">
+                                        <label class="form-label mb-0"><span style="color:red;background: transparent;margin: 0 5px 2px 0;">*</span>Request For</label>
+                                        <select class="form-select cust-userid" name="Request For" required>
+                                        <option selected value="${botuserValue}">${botuserValue}</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                       <div>
+                                            <div class="mb-3">
+                                                <label class="form-label mb-0"><span style="color:red;background: transparent;margin: 0 5px 2px 0;">*</span>Type of Request</label>
+                                                <select class="typeofrequest1" onchange="typeofrequest1(this)" name="Type of Request" required>
+                                                    <option value="--None--">--None--</option>
+                                                    <option value="Data Modification or Backend Changes">Data Modification or Backend Changes</option>
+                                                    <option value="Data Upload">Data Upload</option>
+                                                    <option value="Request for Report or Data Dump">Request for Report or Data Dump</option>
+                                                </select>
+                                            </div>
+                                       </div>
+                                       <div class="aftertypeofrequest">
+                                       
+                                       </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label  class="form-label mb-0"><span style="color:red;background: transparent;margin: 0 5px 2px 0;">*</span>Business Justification for the Request</label>
+                                        <textarea class="form-control" id="" rows="2" name="Business Justification for the Reques" required autocomplete="off"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label  class="form-label mb-0"><span style="color:red;background: transparent;margin: 0 5px 2px 0;">*</span>Brief Description of the Request</label>
+                                        <input type="text" class="form-control" id="" name="Brief Description of the Request" required autocomplete="off">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label  class="form-label mb-0"><span style="color:red;background: transparent;margin: 0 5px 2px 0;">*</span>Any additional details</label>
+                                        <textarea class="form-control" id="" rows="2" name="Any additional details" required autocomplete="off"></textarea>
+                                    </div>
+                                    <div style="display: flex;justify-content: space-between;align-items: center;" class="submit-btns">
+                                        <div>
+                                        <input class="btn btn-secondary"  type="reset" value="Reset" onclick="resetform()">
+                                        <input  class="btn btn-primary" type="button" value="Submit" id="submit-ticket" onclick="submitfun()">
+                                        </div>
+                                        <div style="color:red;font-weight: 500;" class="formerror"></div> 
+                                    </div>
                                 </form>
                             </div>
                     </li> 
@@ -215,11 +230,12 @@ function raiseticket(ele){
                         <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
                     </li>  `
     $(".chatbox").append(htmlstring)
-    chatbox.scrollTo(0, chatbox.scrollHeight);
+    $(".cust-category").last().select2()
+    $(".cust-userid").last().select2({
+        disabled: true
+    })
+    $(".typeofrequest1").last().select2() //
 }
-
-
-
 
 
 
@@ -444,4 +460,87 @@ function isDateLessThanToday(dateString) {
         return true
     }
 
+}
+
+
+function resetform(){
+    const forms = document.getElementsByClassName('ticketform');
+    const lastForm = forms[forms.length - 1];
+
+    if (lastForm) {
+        // Reset the form
+        lastForm.reset();
+        // Reset each Select2 element within the form to their default state
+        $(lastForm).find('.select2-hidden-accessible').val(null).trigger('change');
+        $('.cust-category').last().val("Data Related Request").trigger("change")
+        let botuserValue = localStorage.getItem('botuser');
+        $(".cust-userid").last().val(botuserValue).trigger("change")
+    }
+}
+
+function submitfun(){
+    let forms = document.querySelectorAll('.ticketform');
+    let lastForm = forms[forms.length - 1];
+    const formdata = new FormData();
+    let fdata = {};
+    for (let element of lastForm.elements) {
+        if (element.name) { 
+            fdata[element.name] = element.value.trim();
+            formdata.append(element.name, element.value.trim());
+        }
+    }
+    let notempty=true;
+    let emptykey=''
+    for (const [key, value] of Object.entries(fdata)) {
+        if (!value || value === '') {
+            emptykey=key
+            notempty=false
+            break;
+        }
+    }
+   console.log(fdata);
+    if(notempty){
+        $.ajax({
+            type: 'POST',
+            url: '/submitticket',
+            data: formdata,
+            processData: false, 
+            contentType: false, 
+            success: function(res) {
+            console.log(res);
+            if(res.msg="success"){
+                $(".formerror").last().text('')
+                let htmlstr=`<li class="chat incoming" style="padding-top: 10px;">
+                                <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                                <div class="bot-response" style="background-color: powderblue;">
+                                    <div>Your ticket has been successfully submitted !!!<br><br>`
+                                htmlstr+=`<strong>ID</strong> : <span> 12345678</span><br>`
+                                let listkeys=Object.keys(res.tdata)
+                                for(let i=0;i<listkeys.length;i++){
+                                    htmlstr+=`<strong>${listkeys[i]}</strong> : <span>${res.tdata[listkeys[i]]}</span><br>`
+                                }
+                htmlstr+=`          </div>
+                                </div>
+                            </li>
+                            <li class="chat incoming" style="padding-top: 10px;height: 15px;">
+                                <span class="material-symbols-outlined" style="color: transparent;background-color: transparent;">smart_toy</span>
+                                <div style="color: grey;font-size: 11px;">${getCurrentDateTime()}</div>
+                            </li>`
+                $(".chatbox").append(htmlstr)
+                $('.ticketform').last().find('input, select, textarea').prop('readonly', true);
+                $('.ticketform').last().find('select').prop('disabled', true);
+                $('.submit-btns').last().css({'pointer-events':'none'});
+
+            }else{
+                $(".formerror").last().text('Internal server Error !!!')
+            }   
+            },
+            error: function(error) {
+                $(".formerror").last().text('Internal server Error !!!')
+            }
+        });
+    }else{
+        // alert(`The field "${emptykey}" is required.`);
+        $(".formerror").last().text('All fields are required !!!')
+    }
 }
