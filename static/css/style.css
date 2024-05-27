@@ -94,6 +94,7 @@ header h2 {
   overflow-y: auto;
   height: 70vh;
   padding: 18px 20px 100px;
+  overflow-x: hidden;
 }
 .chatbot :where(.chatbox, textarea)::-webkit-scrollbar {
   width: 6px;
@@ -115,7 +116,7 @@ header h2 {
   justify-content: flex-end;
   padding: 20px 0px;
 }
-.chatbox .incoming span {
+.chatbox .incoming span.material-symbols-outlined {
   width: 24px;
   height: 32px;
   color: #fff;
@@ -159,6 +160,8 @@ header h2 {
   word-wrap: break-word;
   text-wrap: wrap;
   word-break: break-word;
+  overflow-x: hidden;
+  width: 100%;
 }
 .chatbot .chat-input {
   display: flex;
@@ -235,7 +238,7 @@ header h2 {
     font-size: 0.7rem;
   }
   #formdiv ,#formdiv label
-  ,#formdiv input,#formdiv select{
+  ,#formdiv input,#formdiv select,#formdiv textarea{
     font-size: 0.7rem;
   }
   

@@ -70,3 +70,7 @@
         display: none;
         border-radius: 9px;
     }
+
+.select2-container {
+    width: 100% !important;
+}
