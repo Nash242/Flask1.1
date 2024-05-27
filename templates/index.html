@@ -4,6 +4,7 @@
 <head>
   <meta charset="utf-8">
   <title>Genpact</title>
+  <link rel="stylesheet" href="{{url_for('static',filename='css/select2.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/bootstrap.min.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/poppins.css')}}">
   <link rel="stylesheet" href="{{url_for('static',filename='css/style.css')}}">
@@ -16,9 +17,11 @@
   <link rel="stylesheet" href="{{url_for('static',filename='icons/material-symbol-outlined.css')}}" />
   <link rel="stylesheet" href="{{url_for('static',filename='icons/material-symbol-rounded.css')}}" />
 
-  <script src="{{url_for('static',filename='js/bootstrap.bundle.min.js')}}" defer></script>
-  <script src="{{url_for('static',filename='js/jquery.min.js')}}" defer></script>
+  <script src="{{url_for('static',filename='js/bootstrap.bundle.min.js')}}" ></script>
+  <script src="{{url_for('static',filename='js/jquery.min.js')}}" ></script>
   <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+  <script src="{{url_for('static',filename='js/select2.min.js')}}"></script>
+  <script src="{{url_for('static',filename='js/function.js')}}"></script>
   <script src="{{url_for('static',filename='js/script.js')}}" defer></script>
   <script src="{{url_for('static',filename='js/myscript.js')}}"></script>
 </head>
@@ -96,7 +99,7 @@
     <ul class="chatbox" onclick="modaloff()">
       <li class="chat incoming"><span class="material-symbols-outlined">smart_toy</span>
         <div class="bot-response ">
-          <div>Hello Buddy,Welcome to Access Robo.What brings you here today? 
+          <div>Hello <span class="loggedusername"></span> , Welcome to Access Robo.What brings you here today? 
             Please use the options below or ask me anything about product.</div>
           <br>
           <br>
