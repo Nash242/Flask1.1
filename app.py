@@ -251,6 +251,11 @@ intent_db = vector_intent(intent_chunks)
 
 
 #============================================= Flask Functions ===========================================
+# Login
+@app.route('/login', methods=['GET','POST'])
+def login():
+    return render_template('login.html')
+
 # Route for GET requests
 @app.route('/', methods=['GET','POST'])
 def get_route():
